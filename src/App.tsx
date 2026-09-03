@@ -1,8 +1,13 @@
+import { Route, Switch } from 'wouter';
+import { Home } from './apps/home';
+import { Tools } from './apps/tools';
+
 function App() {
   return (
-    <>
-      <div>hello</div>
-    </>
+    <Switch>
+      <Route path="/" component={Home} />
+      <Route path="/tools" component={Tools} />
+    </Switch>
   );
 }
 
