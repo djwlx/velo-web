@@ -11,16 +11,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "preact": "^10.29.8",
     "wouter": "^3.10.0",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@preact/preset-vite": "^2.10.6",
     "@types/node": "^24.13.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@vitejs/plugin-react": "^6.1.0",
     "oxfmt": "^0.65.0",
     "oxlint": "^1.79.0",
     "typescript": "~6.0.2",
