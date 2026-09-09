@@ -19,7 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { FileListTable } from '@/components/file-list-table';
+import { FileListTable } from '@/components/table-pro';
 import { getFileDownloadUrl, getFileList } from '@/services/pan115';
 import type { Pan115FileItem } from '@/services/pan115';
 
