@@ -17,4 +17,5 @@ export interface ProTableProps<T = unknown> {
   items: readonly T[];
   columns: ProTableColumn<T>[];
   rowKey?: string;
+  footer?: ReactNode;
 }

@@ -13,18 +13,27 @@ import type { ProTableProps } from './types';
 export type { ProTableColumn, ProTableProps } from './types';
 
 export function ProTable<T>(props: ProTableProps<T>) {
-  const { className, columns = [], items = [], rowKey } = props;
+  const { className, columns = [], items = [], rowKey, footer } = props;
 
   return (
     <div
-      className={cn('min-h-0 flex-1 overflow-y-auto', className)}
+      className={cn(
+        'min-h-0 flex-1 overflow-y-auto [&>[data-slot=table-container]]:overflow-visible',
+        className
+      )}
       role="region"
     >
       <Table>
-        <TableHeader className="bg-muted/40">
+        <TableHeader className="[&_tr]:border-0">
           <TableRow>
             {columns.map((column) => (
-              <TableHead key={column.key} className={column.className}>
+              <TableHead
+                key={column.key}
+                className={cn(
+                  'sticky top-0 z-10 border-b bg-muted',
+                  column.className
+                )}
+              >
                 {column.title}
               </TableHead>
             ))}
@@ -58,6 +67,7 @@ export function ProTable<T>(props: ProTableProps<T>) {
           })}
         </TableBody>
       </Table>
+      {footer}
     </div>
   );
 }

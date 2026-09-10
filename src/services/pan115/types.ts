@@ -4,6 +4,7 @@ export interface Pan115FileItem {
   pickCode: string | null;
   isDirectory: boolean;
   type: string | null;
+  size: number;
 }
 
 export interface Pan115FileList {
