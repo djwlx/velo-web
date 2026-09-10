@@ -1,14 +1,8 @@
-import { useUser } from '@/stores/user';
-import { Button } from '@/components/ui/button';
+// import { useUser } from '@/stores/user';
 
 export function Home() {
-  const user = useUser((state) => state.user);
-  const increase = useUser((state) => state.increasePopulation);
+  // const user = useUser((state) => state.user);
+  // const increase = useUser((state) => state.increasePopulation);
 
-  return (
-    <div>
-      {user}
-      <Button onClick={increase}>Click me</Button>
-    </div>
-  );
+  return <div>home</div>;
 }
