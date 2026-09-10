@@ -1,4 +1,7 @@
-import { FileListTable } from '@/components/file-list-table';
+import {
+  FileListTable,
+  type FileListTableColumn,
+} from '@/components/file-list-table';
 import { getFileList } from '@/services/pan115';
 import { formatFileSize } from '@/utils/file';
 import { useEffect, useState } from 'react';

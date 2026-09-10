@@ -1,3 +1,4 @@
-import type { ProTableProps } from '../pro-table';
+import type { ProTableProps, ProTableColumn } from '../pro-table';
 
-export interface FileListTableProps extends ProTableProps {}
+export interface FileListTableProps<T> extends ProTableProps<T> {}
+export interface FileListTableColumn<T> extends ProTableColumn<T> {}

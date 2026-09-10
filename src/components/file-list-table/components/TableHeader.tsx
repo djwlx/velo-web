@@ -1,19 +1,45 @@
 import {
   Breadcrumb,
   BreadcrumbItem,
+  BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { CardHeader } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import { RefreshCw } from 'lucide-react';
 
-export interface FileTableHeaderProps {}
+export interface FileTableBreadcrumbItem {
+  cid: string;
+  name: string;
+}
 
-export function FileTableHeader(props: FileTableHeaderProps) {
+export interface FileTableHeaderProps {
+  breadcrumbs: FileTableBreadcrumbItem[];
+  onRefresh?: () => void;
+  onNavigate?: (index: number, entry: FileTableBreadcrumbItem) => void;
+  isLoading?: boolean;
+  className?: string;
+}
+
+export function FileTableHeader({
+  breadcrumbs,
+  onRefresh,
+  onNavigate,
+  isLoading = false,
+  className,
+}: FileTableHeaderProps) {
   return (
-    <CardHeader className="gap-4 border-b">
+    <CardHeader className={cn('gap-4 border-b', className)}>
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <Button variant="outline" size="sm">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onRefresh}
+          disabled={isLoading}
+        >
           <RefreshCw data-icon="inline-start" />
           刷新
         </Button>
@@ -29,9 +55,7 @@ export function FileTableHeader(props: FileTableHeaderProps) {
                 ) : (
                   <BreadcrumbLink
                     render={<button type="button" />}
-                    onClick={() =>
-                      setBreadcrumbs((current) => current.slice(0, index + 1))
-                    }
+                    onClick={() => onNavigate?.(index, entry)}
                   >
                     {entry.name}
                   </BreadcrumbLink>
