@@ -6,9 +6,9 @@ import {
 import { Card } from '@/components/ui/card';
 import { getFileList } from '@/services/pan115';
 import { formatFileSize } from '@/utils/file';
-import { Folder } from 'lucide-react';
 import { useCallback } from 'react';
 import { useSearchParams } from 'wouter';
+import { NameCell } from './components/NameCell';
 import type { ItemsType } from './types';
 import { CID_PARAM, PAGE_SIZE, ROOT_ENTRY, toBreadcrumbs } from './utils';
 
@@ -55,19 +55,12 @@ export function FileList115() {
     {
       key: 'name',
       title: '名称',
-      render: (_value, item) =>
-        item.isDir ? (
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 text-primary hover:underline"
-            onClick={() => navigate(item.cid ?? ROOT_ENTRY.cid)}
-          >
-            <Folder className="size-4 shrink-0" />
-            {item.name}
-          </button>
-        ) : (
-          <span>{item.name}</span>
-        ),
+      render: (_value, item) => (
+        <NameCell
+          item={item}
+          onOpen={() => navigate(item.cid ?? ROOT_ENTRY.cid)}
+        />
+      ),
     },
     {
       key: 'size',
@@ -83,8 +76,8 @@ export function FileList115() {
   ];
 
   return (
-    <main className="max-h-screen px-4 py-8 sm:px-6 lg:px-8">
-      <Card className="mx-auto flex max-h-[calc(100vh-4rem)] max-w-6xl flex-col gap-0 overflow-hidden">
+    <main className="h-screen px-4 py-6 flex flex-col items-center">
+      <Card className="w-full max-w-6xl">
         <FileListTable
           cid={cid}
           columns={columns}
