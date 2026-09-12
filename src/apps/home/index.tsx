@@ -4,11 +4,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useRequestQuery } from '@/hooks/useRequestQuery';
-import { getVersion } from '@/services/config';
 import { FileText, Image } from 'lucide-react';
 import { Link } from 'wouter';
+import { VersionBadge } from './components/VersionBadge';
 
 const entries = [
   {
@@ -26,20 +24,11 @@ const entries = [
 ];
 
 export function Home() {
-  const { data } = useRequestQuery(getVersion);
-  const server = data?.data.server;
-  const web = data?.data.web;
-
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center gap-6 px-4 py-12">
       <div className="flex items-center gap-3">
         <h1 className="font-heading text-2xl font-medium">Velo</h1>
-        {server ? (
-          <Badge variant="secondary">
-            server v{server}
-            {web ? ` · web v${web}` : ''}
-          </Badge>
-        ) : null}
+        <VersionBadge />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {entries.map((entry) => (
