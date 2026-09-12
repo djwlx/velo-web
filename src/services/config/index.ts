@@ -1,7 +1,8 @@
 import { request } from '@/utils/request';
 
 export interface AppVersion {
-  version: string;
+  server: string;
+  web: string | null;
 }
 
 export const getVersion = () => request<AppVersion>('/config/version');
