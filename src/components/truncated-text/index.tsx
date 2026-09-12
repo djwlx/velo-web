@@ -36,12 +36,11 @@ export function TruncatedText({ text, className }: TruncatedTextProps) {
         <span ref={textRef} className="min-w-0 truncate">
           {text}
         </span>
-        {truncated && (
-          <TooltipTrigger
-            className="absolute inset-y-0 right-0 w-4 cursor-default"
-            render={<span />}
-          />
-        )}
+        <TooltipTrigger
+          disabled={!truncated}
+          className="absolute inset-y-0 right-0 w-4 cursor-default"
+          render={<span />}
+        />
       </span>
       <TooltipContent className="max-w-[50vw] break-all">{text}</TooltipContent>
     </Tooltip>
