@@ -7,13 +7,21 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
+import { LoaderCircle } from 'lucide-react';
 
 import type { ProTableProps } from './types';
 
 export type { ProTableColumn, ProTableProps } from './types';
 
 export function ProTable<T>(props: ProTableProps<T>) {
-  const { className, columns = [], items = [], rowKey, footer } = props;
+  const {
+    className,
+    columns = [],
+    items = [],
+    rowKey,
+    footer,
+    isLoading = false,
+  } = props;
 
   return (
     <div
@@ -40,31 +48,42 @@ export function ProTable<T>(props: ProTableProps<T>) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {items.map((item, index) => {
-            const dataRowKey: string | number = rowKey
-              ? (item as Record<string, any>)[rowKey]
-              : index;
+          {isLoading ? (
+            <TableRow className="hover:bg-transparent">
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 text-center text-muted-foreground"
+              >
+                <LoaderCircle className="mx-auto size-5 animate-spin" />
+              </TableCell>
+            </TableRow>
+          ) : null}
+          {!isLoading &&
+            items.map((item, index) => {
+              const dataRowKey: string | number = rowKey
+                ? (item as Record<string, any>)[rowKey]
+                : index;
 
-            return (
-              <TableRow key={dataRowKey}>
-                {columns.map((column) => {
-                  const rowCellKey = `${dataRowKey}-${column.key}`;
+              return (
+                <TableRow key={dataRowKey}>
+                  {columns.map((column) => {
+                    const rowCellKey = `${dataRowKey}-${column.key}`;
 
-                  const keyValue = (item as Record<string, any>)[column.key];
+                    const keyValue = (item as Record<string, any>)[column.key];
 
-                  const cellValue =
-                    typeof keyValue === 'string' ? keyValue : null;
+                    const cellValue =
+                      typeof keyValue === 'string' ? keyValue : null;
 
-                  return (
-                    <TableCell key={rowCellKey} className={column.className}>
-                      {column.render?.(keyValue, item, index, items) ??
-                        cellValue}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            );
-          })}
+                    return (
+                      <TableCell key={rowCellKey} className={column.className}>
+                        {column.render?.(keyValue, item, index, items) ??
+                          cellValue}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
       {footer}

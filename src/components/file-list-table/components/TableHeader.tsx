@@ -33,10 +33,33 @@ export function FileTableHeader({
 }: FileTableHeaderProps) {
   return (
     <CardHeader className={cn('gap-4 border-b', className)}>
-      <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <Breadcrumb className="min-w-0">
+          <BreadcrumbList>
+            {breadcrumbs.map((entry, index) => {
+              const isCurrent = index === breadcrumbs.length - 1;
+              return (
+                <BreadcrumbItem key={`${entry.cid}-${index}`}>
+                  {isCurrent ? (
+                    <BreadcrumbPage>{entry.name}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink
+                      render={<button type="button" />}
+                      onClick={() => onNavigate?.(index, entry)}
+                    >
+                      {entry.name}
+                    </BreadcrumbLink>
+                  )}
+                  {!isCurrent && <BreadcrumbSeparator />}
+                </BreadcrumbItem>
+              );
+            })}
+          </BreadcrumbList>
+        </Breadcrumb>
         <Button
           variant="outline"
           size="sm"
+          className="ml-auto shrink-0"
           onClick={onRefresh}
           disabled={isLoading}
         >
@@ -44,28 +67,6 @@ export function FileTableHeader({
           刷新
         </Button>
       </div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          {breadcrumbs.map((entry, index) => {
-            const isCurrent = index === breadcrumbs.length - 1;
-            return (
-              <BreadcrumbItem key={`${entry.cid}-${index}`}>
-                {isCurrent ? (
-                  <BreadcrumbPage>{entry.name}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink
-                    render={<button type="button" />}
-                    onClick={() => onNavigate?.(index, entry)}
-                  >
-                    {entry.name}
-                  </BreadcrumbLink>
-                )}
-                {!isCurrent && <BreadcrumbSeparator />}
-              </BreadcrumbItem>
-            );
-          })}
-        </BreadcrumbList>
-      </Breadcrumb>
     </CardHeader>
   );
 }
