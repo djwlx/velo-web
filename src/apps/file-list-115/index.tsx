@@ -13,7 +13,13 @@ import { useLocation, useSearchParams } from 'wouter';
 import { CacheButton } from './components/CacheButton';
 import { NameCell } from './components/NameCell';
 import type { ItemsType } from './types';
-import { CID_PARAM, PAGE_SIZE, ROOT_ENTRY, toBreadcrumbs } from './utils';
+import {
+  CID_PARAM,
+  PAGE_SIZE,
+  ROOT_ENTRY,
+  downloadFile,
+  toBreadcrumbs,
+} from './utils';
 
 export function FileList115() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -46,6 +52,7 @@ export function FileList115() {
           isDir: item.isDirectory,
           cid: item.cid,
           size: item.size,
+          pickCode: item.pickCode,
         })),
         page: res.data.page,
         total: res.data.total,
@@ -63,6 +70,9 @@ export function FileList115() {
         <NameCell
           item={item}
           onOpen={() => navigate(item.cid ?? ROOT_ENTRY.cid)}
+          onDownload={() => {
+            if (item.pickCode) downloadFile(item.pickCode, item.name);
+          }}
         />
       ),
     },

@@ -8,4 +8,5 @@ export interface ItemsType {
   size?: number;
   isDir: boolean;
   cid?: string;
+  pickCode?: string | null;
 }
