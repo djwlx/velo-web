@@ -4,16 +4,20 @@ import {
   type FileListTableLoadParams,
 } from '@/components/file-list-table';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { getFileList } from '@/services/pan115';
 import { formatFileSize } from '@/utils/file';
+import { ArrowLeft } from 'lucide-react';
 import { useCallback } from 'react';
-import { useSearchParams } from 'wouter';
+import { useLocation, useSearchParams } from 'wouter';
+import { CacheButton } from './components/CacheButton';
 import { NameCell } from './components/NameCell';
 import type { ItemsType } from './types';
 import { CID_PARAM, PAGE_SIZE, ROOT_ENTRY, toBreadcrumbs } from './utils';
 
 export function FileList115() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [, setLocation] = useLocation();
 
   const cid = searchParams.get(CID_PARAM) ?? ROOT_ENTRY.cid;
 
@@ -73,11 +77,23 @@ export function FileList115() {
         return formatFileSize(item.size);
       },
     },
+    {
+      key: 'actions',
+      title: '操作',
+      render: (_value, item) =>
+        item.isDir ? <CacheButton cid={item.cid} /> : null,
+    },
   ];
 
   return (
-    <main className="h-screen px-4 py-6 flex flex-col items-center">
-      <Card className="w-full max-w-6xl">
+    <main className="h-screen px-4 py-6 flex flex-col items-center gap-3">
+      <div className="flex w-full max-w-6xl">
+        <Button variant="outline" size="sm" onClick={() => setLocation('/')}>
+          <ArrowLeft data-icon="inline-start" />
+          返回
+        </Button>
+      </div>
+      <Card className="w-full max-w-6xl gap-0">
         <FileListTable
           cid={cid}
           columns={columns}

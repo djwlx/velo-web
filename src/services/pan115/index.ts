@@ -51,6 +51,19 @@ export const getFileDownloadUrl = (pickCode: string): string => {
   return `${API_BASE_URL}/115/file/${encodeURIComponent(normalizedPickCode)}`;
 };
 
+export const cachePics = (cid: string) => {
+  const normalizedCid = cid.trim();
+  if (!/^\d+$/.test(normalizedCid)) {
+    throw new TypeError('cid must contain only digits');
+  }
+
+  return request<{ cid: string; started: boolean }>('/115/pic/cache', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cid: normalizedCid }),
+  });
+};
+
 export type {
   GetPan115FilesParams,
   Pan115FileItem,
