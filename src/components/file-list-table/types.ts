@@ -11,14 +11,15 @@ export interface FileListTableLoadResult<T> {
   items: T[];
   page: number;
   total: number;
+  path?: FileTableBreadcrumbItem[];
 }
 
 export interface FileListTableProps<T> extends Pick<
   ProTableProps<T>,
   'className' | 'columns' | 'rowKey'
 > {
-  breadcrumbs?: FileTableBreadcrumbItem[];
-  onNavigate?: (index: number, entry: FileTableBreadcrumbItem) => void;
+  cid: string;
+  onNavigate?: (entry: FileTableBreadcrumbItem, index: number) => void;
   loadPage: (
     params: FileListTableLoadParams
   ) => Promise<FileListTableLoadResult<T>>;

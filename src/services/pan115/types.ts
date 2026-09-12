@@ -7,12 +7,18 @@ export interface Pan115FileItem {
   size: number;
 }
 
+export interface Pan115PathItem {
+  cid: string;
+  name: string;
+}
+
 export interface Pan115FileList {
   cid: string;
   page: number;
   pageSize: number;
   total: number;
   items: Pan115FileItem[];
+  path: Pan115PathItem[];
 }
 
 export interface GetPan115FilesParams {

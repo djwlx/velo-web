@@ -55,4 +55,5 @@ export type {
   GetPan115FilesParams,
   Pan115FileItem,
   Pan115FileList,
+  Pan115PathItem,
 } from './types';

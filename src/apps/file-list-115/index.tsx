@@ -7,17 +7,30 @@ import { Card } from '@/components/ui/card';
 import { getFileList } from '@/services/pan115';
 import { formatFileSize } from '@/utils/file';
 import { Folder } from 'lucide-react';
-import { useCallback, useState } from 'react';
-import type { BreadcrumbEntry, ItemsType } from './types';
-
-const PAGE_SIZE = 50;
-
-const ROOT_ENTRY: BreadcrumbEntry = { cid: '0', name: '全部文件' };
+import { useCallback } from 'react';
+import { useSearchParams } from 'wouter';
+import type { ItemsType } from './types';
+import { CID_PARAM, PAGE_SIZE, ROOT_ENTRY, toBreadcrumbs } from './utils';
 
 export function FileList115() {
-  const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbEntry[]>([
-    ROOT_ENTRY,
-  ]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const cid = searchParams.get(CID_PARAM) ?? ROOT_ENTRY.cid;
+
+  const navigate = useCallback(
+    (nextCid: string) => {
+      setSearchParams((prev) => {
+        const params = new URLSearchParams(prev);
+        if (nextCid === ROOT_ENTRY.cid) {
+          params.delete(CID_PARAM);
+        } else {
+          params.set(CID_PARAM, nextCid);
+        }
+        return params;
+      });
+    },
+    [setSearchParams]
+  );
 
   const loadPage = useCallback(
     async ({ cid, page, pageSize }: FileListTableLoadParams) => {
@@ -32,6 +45,7 @@ export function FileList115() {
         })),
         page: res.data.page,
         total: res.data.total,
+        path: toBreadcrumbs(res.data.path),
       };
     },
     []
@@ -46,12 +60,7 @@ export function FileList115() {
           <button
             type="button"
             className="inline-flex items-center gap-1.5 text-primary hover:underline"
-            onClick={() =>
-              setBreadcrumbs((current) => [
-                ...current,
-                { cid: item.cid ?? '0', name: item.name },
-              ])
-            }
+            onClick={() => navigate(item.cid ?? ROOT_ENTRY.cid)}
           >
             <Folder className="size-4 shrink-0" />
             {item.name}
@@ -77,13 +86,11 @@ export function FileList115() {
     <main className="max-h-screen px-4 py-8 sm:px-6 lg:px-8">
       <Card className="mx-auto flex max-h-[calc(100vh-4rem)] max-w-6xl flex-col gap-0 overflow-hidden">
         <FileListTable
+          cid={cid}
           columns={columns}
-          breadcrumbs={breadcrumbs}
           loadPage={loadPage}
           pageSize={PAGE_SIZE}
-          onNavigate={(index) =>
-            setBreadcrumbs((current) => current.slice(0, index + 1))
-          }
+          onNavigate={(entry) => navigate(entry.cid)}
         />
       </Card>
     </main>

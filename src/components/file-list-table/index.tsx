@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ProTable } from '../pro-table';
 import { FileTableHeader } from './components/TableHeader';
 
+import type { FileTableBreadcrumbItem } from './components/TableHeader';
 import type { FileListTableProps } from './types';
 
 export type {
@@ -21,7 +22,7 @@ const DEFAULT_PAGE_SIZE = 50;
 
 export function FileListTable<T>(props: FileListTableProps<T>) {
   const {
-    breadcrumbs = [],
+    cid,
     onNavigate,
     columns,
     rowKey,
@@ -33,15 +34,16 @@ export function FileListTable<T>(props: FileListTableProps<T>) {
   const [items, setItems] = useState<T[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [breadcrumbs, setBreadcrumbs] = useState<FileTableBreadcrumbItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const requestId = useRef(0);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const currentCid = breadcrumbs[breadcrumbs.length - 1]?.cid ?? '0';
   const hasMore = items.length < total;
 
   const fetchPage = useCallback(
-    async (cid: string, nextPage: number, append: boolean) => {
+    async (targetCid: string, nextPage: number, append: boolean) => {
       const currentRequestId = ++requestId.current;
 
       if (append) {
@@ -54,7 +56,11 @@ export function FileListTable<T>(props: FileListTableProps<T>) {
       }
 
       try {
-        const result = await loadPage({ cid, page: nextPage, pageSize });
+        const result = await loadPage({
+          cid: targetCid,
+          page: nextPage,
+          pageSize,
+        });
         if (currentRequestId !== requestId.current) return;
 
         setItems((prev) =>
@@ -62,6 +68,7 @@ export function FileListTable<T>(props: FileListTableProps<T>) {
         );
         setPage(result.page);
         setTotal(result.total);
+        if (!append && result.path) setBreadcrumbs(result.path);
       } finally {
         if (currentRequestId === requestId.current) {
           setIsLoading(false);
@@ -74,14 +81,12 @@ export function FileListTable<T>(props: FileListTableProps<T>) {
 
   useEffect(() => {
     // oxlint-disable-next-line react/set-state-in-effect
-    void fetchPage(currentCid, 1, false);
-  }, [currentCid, fetchPage]);
+    void fetchPage(cid, 1, false);
+  }, [cid, fetchPage]);
 
   const loadMore = useCallback(() => {
-    void fetchPage(currentCid, page + 1, true);
-  }, [fetchPage, currentCid, page]);
-
-  const sentinelRef = useRef<HTMLDivElement>(null);
+    void fetchPage(cid, page + 1, true);
+  }, [fetchPage, cid, page]);
 
   const handleIntersect = useCallback(() => {
     if (!hasMore || isLoading || isLoadingMore) return;
@@ -103,6 +108,14 @@ export function FileListTable<T>(props: FileListTableProps<T>) {
     return () => observer.disconnect();
   }, [handleIntersect]);
 
+  const handleNavigate = useCallback(
+    (index: number, entry: FileTableBreadcrumbItem) => {
+      setBreadcrumbs((prev) => prev.slice(0, index + 1));
+      onNavigate?.(entry, index);
+    },
+    [onNavigate]
+  );
+
   const infiniteFooter = (
     <div
       ref={sentinelRef}
@@ -116,8 +129,8 @@ export function FileListTable<T>(props: FileListTableProps<T>) {
     <>
       <FileTableHeader
         breadcrumbs={breadcrumbs}
-        onRefresh={() => void fetchPage(currentCid, 1, false)}
-        onNavigate={onNavigate}
+        onRefresh={() => void fetchPage(cid, 1, false)}
+        onNavigate={handleNavigate}
         isLoading={isLoading}
       />
       <ProTable
