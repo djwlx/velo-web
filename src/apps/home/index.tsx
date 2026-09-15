@@ -6,7 +6,6 @@ import {
 } from '@/components/ui/card';
 import { FileText, Image } from 'lucide-react';
 import { Link } from 'wouter';
-import { VersionBadge } from './components/VersionBadge';
 
 const entries = [
   {
@@ -25,11 +24,7 @@ const entries = [
 
 export function Home() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center gap-6 px-4 py-12">
-      <div className="flex items-center gap-3">
-        <h1 className="font-heading text-2xl font-medium">Velo</h1>
-        <VersionBadge />
-      </div>
+    <main className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col justify-center gap-6 overflow-auto p-4">
       <div className="grid gap-4 sm:grid-cols-2">
         {entries.map((entry) => (
           <Link key={entry.href} href={entry.href} className="block">

@@ -96,14 +96,14 @@ export function FileList115() {
   ];
 
   return (
-    <main className="h-screen px-4 py-6 flex flex-col items-center gap-3">
-      <div className="flex w-full max-w-6xl">
+    <main className="px-4 py-6">
+      <div className="flex pb-4">
         <Button variant="outline" size="sm" onClick={() => setLocation('/')}>
           <ArrowLeft data-icon="inline-start" />
           返回
         </Button>
       </div>
-      <Card className="w-full max-w-6xl gap-0">
+      <Card className="gap-0">
         <FileListTable
           cid={cid}
           columns={columns}

@@ -24,23 +24,14 @@ export function ProTable<T>(props: ProTableProps<T>) {
   } = props;
 
   return (
-    <div
-      className={cn(
-        'min-h-0 flex-1 overflow-y-auto [&>[data-slot=table-container]]:overflow-visible',
-        className
-      )}
-      role="region"
-    >
+    <div className={cn('flex-1', className)} role="region">
       <Table>
-        <TableHeader className="[&_tr]:border-0">
+        <TableHeader>
           <TableRow>
             {columns.map((column) => (
               <TableHead
                 key={column.key}
-                className={cn(
-                  'sticky top-0 z-10 border-b bg-muted',
-                  column.className
-                )}
+                className={cn('sticky top-0 bg-muted', column.className)}
               >
                 {column.title}
               </TableHead>
