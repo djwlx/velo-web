@@ -1,16 +1,21 @@
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import { Navigation } from './Navigation';
+import { Navigation, type NavigationSection } from './Navigation';
 
 const sidebarSurfaceClassName =
   'w-72 shrink-0 border-r bg-popover text-popover-foreground ';
 
 interface SidebarProps {
+  sections?: NavigationSection[];
   mobileOpen: boolean;
   onMobileOpenChange: (open: boolean) => void;
 }
 
-export function Sidebar({ mobileOpen, onMobileOpenChange }: SidebarProps) {
+export function Sidebar({
+  sections,
+  mobileOpen,
+  onMobileOpenChange,
+}: SidebarProps) {
   return (
     <>
       <aside
@@ -20,7 +25,7 @@ export function Sidebar({ mobileOpen, onMobileOpenChange }: SidebarProps) {
         )}
       >
         <div className="flex h-full flex-col">
-          <Navigation />
+          <Navigation sections={sections} />
         </div>
       </aside>
 
@@ -29,7 +34,10 @@ export function Sidebar({ mobileOpen, onMobileOpenChange }: SidebarProps) {
           side="left"
           className={cn(sidebarSurfaceClassName, 'p-0 pt-8 md:hidden')}
         >
-          <Navigation onNavigate={() => onMobileOpenChange(false)} />
+          <Navigation
+            sections={sections}
+            onNavigate={() => onMobileOpenChange(false)}
+          />
         </SheetContent>
       </Sheet>
     </>

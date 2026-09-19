@@ -1,10 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { Link, Redirect, useLocation } from 'wouter';
+import { Link, Redirect, useLocation, useSearchParams } from 'wouter';
 import { z } from 'zod';
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -16,6 +14,7 @@ import {
 } from '@/components/ui/card';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { toast } from '@/components/ui/toast';
 import { useUser } from '@/stores/user';
 import { RequestError } from '@/utils/request';
 
@@ -45,26 +44,39 @@ const getErrorMessage = (error: unknown) => {
 
 export function AuthPage() {
   const [location, navigate] = useLocation();
+  const [searchParams] = useSearchParams();
   const user = useUser((state) => state.user);
   const signIn = useUser((state) => state.signIn);
   const signUp = useUser((state) => state.signUp);
-  const [error, setError] = useState('');
   const isRegister = location === '/register';
+  const redirectParam = searchParams.get('redirect');
+  const redirectTo =
+    redirectParam &&
+    redirectParam.startsWith('/') &&
+    !redirectParam.startsWith('//')
+      ? redirectParam
+      : '/';
+  const authSwitchHref = `${isRegister ? '/login' : '/register'}${
+    redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ''
+  }`;
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues: { email: '', password: '' },
   });
 
-  if (user) return <Redirect to="/" />;
+  if (user) return <Redirect to={redirectTo} />;
 
   const onSubmit = async ({ email, password }: AuthFormValues) => {
-    setError('');
     try {
       if (isRegister) await signUp(email, password);
       else await signIn(email, password);
-      navigate('/');
+      toast.add({
+        type: 'success',
+        title: isRegister ? '注册成功' : '登录成功',
+      });
+      navigate(redirectTo);
     } catch (submitError) {
-      setError(getErrorMessage(submitError));
+      toast.add({ type: 'error', title: getErrorMessage(submitError) });
     }
   };
 
@@ -123,11 +135,6 @@ export function AuthPage() {
                 </Field>
               )}
             />
-            {error ? (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            ) : null}
             <Button type="submit" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting
                 ? '提交中…'
@@ -141,7 +148,7 @@ export function AuthPage() {
           {isRegister ? '已有账号？' : '还没有账号？'}
           <Link
             className="ml-1 text-primary hover:underline"
-            href={isRegister ? '/login' : '/register'}
+            href={authSwitchHref}
           >
             {isRegister ? '去登录' : '去注册'}
           </Link>

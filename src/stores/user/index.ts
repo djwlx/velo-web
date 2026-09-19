@@ -12,6 +12,7 @@ interface UserState {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   refresh: () => Promise<void>;
+  setUser: (user: UserProfile) => void;
   signOut: () => void;
 }
 
@@ -64,6 +65,7 @@ export const useUser = create<UserState>((set) => ({
       set({ user: null, permissions: [], initialized: true });
     }
   },
+  setUser: (user) => set({ user }),
   signOut: () => {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(PERMISSIONS_KEY);

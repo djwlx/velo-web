@@ -11,7 +11,11 @@ interface HeaderProps {
   userProfile?: UserProfile | null;
 }
 
-export function Header({ showMenu = false, onMenuClick, userProfile }: HeaderProps) {
+export function Header({
+  showMenu = false,
+  onMenuClick,
+  userProfile,
+}: HeaderProps) {
   const signOut = useUser((state) => state.signOut);
 
   return (
@@ -32,11 +36,27 @@ export function Header({ showMenu = false, onMenuClick, userProfile }: HeaderPro
       </Link>
       {userProfile ? (
         <div className="ml-auto flex items-center gap-2">
-          <Link href="/setting" className="flex items-center gap-2 text-sm text-muted-foreground">
-            <UserCircle data-icon="inline-start" />
+          <Link
+            href="/setting/me"
+            className="flex items-center gap-2 text-sm text-muted-foreground"
+          >
+            {userProfile.avatar ? (
+              <img
+                src={userProfile.avatar}
+                alt={userProfile.nickname || userProfile.email}
+                className="size-5 rounded-full object-cover"
+              />
+            ) : (
+              <UserCircle data-icon="inline-start" />
+            )}
             <span>{userProfile.nickname || userProfile.email}</span>
           </Link>
-          <Button variant="ghost" size="icon" onClick={signOut} aria-label="退出登录">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={signOut}
+            aria-label="退出登录"
+          >
             <LogOut />
           </Button>
         </div>
